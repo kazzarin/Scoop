@@ -244,7 +244,7 @@ function Expand-InnoArchive {
         $Removal
     )
     $LogPath = "$(Split-Path $Path)\innounp.log"
-    $ArgList = @('-x', "-d$DestinationPath", $Path, '-y')
+    $ArgList = @('-u', '-x', "-d$DestinationPath", $Path, '-y')
     switch -Regex ($ExtractDir) {
         '^[^{].*' { $ArgList += "-c{app}\$ExtractDir" }
         '^{.*' { $ArgList += "-c$ExtractDir" }
