@@ -6,6 +6,7 @@
 
 . "$PSScriptRoot\..\lib\manifest.ps1" # 'manifest' 'parse_json' "install_info"
 . "$PSScriptRoot\..\lib\versions.ps1" # 'Select-CurrentVersion'
+. "$PSScriptRoot\..\lib\download.ps1" # 'Get-UserAgent'
 
 # check if scoop needs updating
 $currentdir = versiondir 'scoop' 'current'
@@ -60,7 +61,7 @@ $true, $false | ForEach-Object { # local and global apps
 
     foreach ($app in $appNames) {
         $status = app_status $app $global
-        if (-not ($status.outdated -or $status.failed -or $status.removed -or $status.missing_deps)) { continue }
+        if (-not ($status.outdated -or $status.failed -or $status.deprecated -or $status.removed -or $status.missing_deps)) { continue }
 
         $item = [ordered]@{}
         $item.Name = $app
@@ -70,6 +71,7 @@ $true, $false | ForEach-Object { # local and global apps
         $info = @()
         if ($status.failed) { $info += 'Install failed' }
         if ($status.hold) { $info += 'Held package' }
+        if ($status.deprecated) { $info += 'Deprecated' }
         if ($status.removed) { $info += 'Manifest removed' }
         $item.Info = $info -join ', '
         $list += [PSCustomObject]$item

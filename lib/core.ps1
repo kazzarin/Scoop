@@ -557,6 +557,9 @@ function app_status($app, $global) {
     $status.failed = failed $app $global
     $status.hold = ($install_info.hold -eq $true)
 
+    $deprecated_dir = (Find-BucketDirectory -Name $install_info.bucket -Root) + "\deprecated"
+    $status.deprecated = (Get-ChildItem $deprecated_dir -Filter "$(sanitary_path $app).json" -Recurse).FullName
+
     $manifest = manifest $app $install_info.bucket $install_info.url
     $status.removed = (!$manifest)
     if ($manifest.version) {
@@ -584,7 +587,6 @@ function app_status($app, $global) {
     if ($deps) {
         $status.missing_deps += , $deps
     }
-
     return $status
 }
 
